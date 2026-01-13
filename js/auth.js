@@ -14,7 +14,8 @@ export const auth = {
     async logout() {
         const { error } = await supabase.auth.signOut();
         if (!error) {
-            window.location.href = '/pages/login.html';
+            const isInsidePages = window.location.pathname.includes('/pages/');
+            window.location.href = isInsidePages ? 'login.html' : 'pages/login.html';
         }
         return { error };
     },
@@ -34,17 +35,17 @@ export const auth = {
     // Check Auth and Redirect
     async checkAuth() {
         const { session } = await this.getSession();
-        const isLoginPage = window.location.pathname.endsWith('login.html');
+        const pathname = window.location.pathname;
+        const isLoginPage = pathname.endsWith('login.html');
+        const isInsidePages = pathname.includes('/pages/');
 
         if (!session) {
-            // If not logged in and not on login page, redirect
             if (!isLoginPage) {
-                window.location.href = '/pages/login.html';
+                window.location.href = isInsidePages ? 'login.html' : 'pages/login.html';
             }
         } else {
-            // If logged in and on login page, redirect to dashboard
             if (isLoginPage) {
-                window.location.href = '/pages/dashboard.html';
+                window.location.href = isInsidePages ? 'dashboard.html' : 'pages/dashboard.html';
             }
         }
         return session;
