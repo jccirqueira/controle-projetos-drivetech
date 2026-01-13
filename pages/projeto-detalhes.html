@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Projeto - Drivetech</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/supabaseClient.js" type="module"></script>
+    <script src="../js/auth.js" type="module"></script>
+    <script src="../js/projeto-detalhes.js" type="module"></script>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-layer-group fa-lg" style="color: var(--primary-color);"></i>
+                <div style="display: flex; flex-direction: column;">
+                    <span class="logo-text" style="line-height: 1;">Drivetech</span>
+                    <span
+                        style="font-size: 0.6rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px;">Soluções
+                        Tecnológicas</span>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard
+                </a>
+                <a href="projetos.html" class="nav-item">
+                    <i class="fa-solid fa-briefcase"></i> Projetos
+                </a>
+                <a href="equipes.html" class="nav-item">
+                    <i class="fa-solid fa-users"></i> Equipes
+                </a>
+                <a href="atividades.html" class="nav-item">
+                    <i class="fa-solid fa-list-check"></i> Atividades
+                </a>
+                <a href="horas.html" class="nav-item">
+                    <i class="fa-solid fa-clock"></i> Horas
+                </a>
+                <a href="clientes.html" class="nav-item">
+                    <i class="fa-solid fa-building"></i> Clientes
+                </a>
+                <a href="relatorios.html" class="nav-item">
+                    <i class="fa-solid fa-file-export"></i> Relatórios
+                </a>
+
+            </nav>
+            <div class="user-profile">
+                <div style="flex: 1;">
+                    <div id="user-name" style="font-weight: 600; font-size: 0.9rem;">...</div>
+                    <div id="user-role" style="font-size: 0.75rem; color: var(--text-secondary);">...</div>
+                </div>
+                <button id="logout-btn" class="btn btn-sm btn-secondary" title="Sair"><i
+                        class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="page-header" style="flex-direction: column; align-items: flex-start;">
+                <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: 0.5rem;">
+                    <a href="projetos.html" class="btn btn-sm btn-secondary"><i class="fa-solid fa-arrow-left"></i>
+                        Voltar</a>
+                    <h1 class="page-title" id="project-name-header">Carregando Projeto...</h1>
+                </div>
+                <p style="color: var(--text-secondary); margin: 0;" id="project-client-header">...</p>
+            </header>
+
+            <!-- KPIs -->
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                <div class="card">
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Progresso de
+                        Horas</div>
+                    <div style="font-size: 1.5rem; font-weight: 700;" id="kpi-hours-percent">0%</div>
+                    <div style="font-size: 0.75rem; color: #666; margin-top: 0.25rem;"><span
+                            id="kpi-hours-spent">0</span> / <span id="kpi-hours-total">0</span>h</div>
+                </div>
+                <div class="card">
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Atividades
+                    </div>
+                    <div style="font-size: 1.5rem; font-weight: 700;" id="kpi-tasks-done">0 / 0</div>
+                    <div style="font-size: 0.75rem; color: #666; margin-top: 0.25rem;">Concluídas</div>
+                </div>
+                <div class="card">
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Status</div>
+                    <div id="project-status-badge">...</div>
+                    <div style="font-size: 0.75rem; color: #666; margin-top: 0.25rem;" id="project-period">...</div>
+                </div>
+                <div class="card">
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Equipe Alocada
+                    </div>
+                    <div style="font-size: 1.5rem; font-weight: 700;" id="kpi-team-count">0</div>
+                    <div style="font-size: 0.75rem; color: #666; margin-top: 0.25rem;">Engenheiros</div>
+                    <div class="card" id="kpi-cost-card" style="display: none;">
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Custo
+                            Total Acumulado</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-color);" id="kpi-cost">R$
+                            0,00</div>
+                        <div style="font-size: 0.75rem; color: #666; margin-top: 0.25rem;">Investimento em horas</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                <div class="card">
+                    <h3 class="card-title">Consumo de Horas por Engenheiro</h3>
+                    <div style="height: 300px;">
+                        <canvas id="chart-hours-engineer"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Distribuição de Atividades</h3>
+                    <div style="height: 300px; display: flex; justify-content: center;">
+                        <canvas id="chart-tasks-status"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team and Activities Tables -->
+            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: var(--spacing-lg);">
+                <div class="card">
+                    <h3 class="card-title">Equipe do Projeto</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Alocação</th>
+                                <th>Horas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="team-table-body">
+                            <tr>
+                                <td colspan="3" style="text-align: center;">Carregando...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Atividades Recentes</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Responsável</th>
+                                <th>Status</th>
+                                <th>Prazo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tasks-table-body">
+                            <tr>
+                                <td colspan="4" style="text-align: center;">Carregando...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

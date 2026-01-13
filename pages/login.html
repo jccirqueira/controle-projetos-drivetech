@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Drivetech</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <script src="../js/supabaseClient.js" type="module"></script>
+    <script src="../js/auth.js" type="module"></script>
+</head>
+
+<body class="login-container">
+    <div class="login-card">
+        <div class="login-logo">
+            <!-- Placeholder for Logo -->
+            <div style="font-size: 2.5rem; font-weight: 700; color: var(--primary-color); letter-spacing: -1px;">
+                Drivetech</div>
+            <p
+                style="color: var(--text-secondary); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; margin-top: -0.5rem;">
+                Soluções Tecnológicas</p>
+        </div>
+
+        <h2 class="card-title" style="text-align: center;">Acesso ao Sistema</h2>
+
+        <div id="login-error" class="alert alert-error hidden">
+            <!-- Error message will appear here -->
+        </div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email" class="form-label">E-mail</label>
+                <input type="email" id="email" class="form-input" placeholder="seu@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Senha</label>
+                <input type="password" id="password" class="form-input" placeholder="********" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
+        </form>
+
+        <p style="margin-top: var(--spacing-lg); font-size: 0.875rem; color: var(--text-secondary);">
+            Esqueceu a senha? Contate o administrador.
+        </p>
+    </div>
+
+    <script type="module">
+        import { auth } from '../js/auth.js';
+
+        // Check if already logged in
+        auth.checkAuth();
+
+        const loginForm = document.getElementById('login-form');
+        const errorAlert = document.getElementById('login-error');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = loginForm.querySelector('button');
+
+            // Reset error
+            errorAlert.classList.add('hidden');
+            errorAlert.textContent = '';
+
+            // Loading state
+            btn.disabled = true;
+            btn.textContent = 'Entrando...';
+
+            try {
+                const { data, error } = await auth.login(email, password);
+
+                if (error) {
+                    throw error;
+                }
+
+                // Redirect handles by auth.js or manually here?
+                // auth.login doesn't redirect, it just returns data.
+                // We should check profile to route properly ideally, but for now Dashboard.
+                window.location.href = 'dashboard.html';
+
+            } catch (err) {
+                errorAlert.classList.remove('hidden');
+                errorAlert.textContent = 'Erro ao entrar: ' + (err.message || 'Verifique suas credenciais.');
+                btn.disabled = false;
+                btn.textContent = 'Entrar';
+            }
+        });
+    </script>
+</body>
+
+</html>

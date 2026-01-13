@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horas - Drivetech</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../js/supabaseClient.js" type="module"></script>
+    <script src="../js/auth.js" type="module"></script>
+    <script src="../js/horas.js" type="module"></script>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-layer-group fa-lg" style="color: var(--primary-color);"></i>
+                <div style="display: flex; flex-direction: column;">
+                    <span class="logo-text" style="line-height: 1;">Drivetech</span>
+                    <span
+                        style="font-size: 0.6rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px;">Soluções
+                        Tecnológicas</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard
+                </a>
+                <a href="projetos.html" class="nav-item">
+                    <i class="fa-solid fa-briefcase"></i> Projetos
+                </a>
+                <a href="equipes.html" class="nav-item">
+                    <i class="fa-solid fa-users"></i> Equipes
+                </a>
+                <a href="alocacoes.html" class="nav-item">
+                    <i class="fa-solid fa-people-arrows"></i> Alocação
+                </a>
+                <a href="atividades.html" class="nav-item">
+                    <i class="fa-solid fa-list-check"></i> Atividades
+                </a>
+                <a href="horas.html" class="nav-item active">
+                    <i class="fa-solid fa-clock"></i> Horas
+                </a>
+                <a href="clientes.html" class="nav-item">
+                    <i class="fa-solid fa-building"></i> Clientes
+                </a>
+                <a href="relatorios.html" class="nav-item">
+                    <i class="fa-solid fa-file-export"></i> Relatórios
+                </a>
+
+            </nav>
+
+            <div class="user-profile">
+                <div style="flex: 1;">
+                    <div id="user-name" style="font-weight: 600; font-size: 0.9rem;">...</div>
+                    <div id="user-role" style="font-size: 0.75rem; color: var(--text-secondary);">...</div>
+                </div>
+                <button id="logout-btn" class="btn btn-sm btn-secondary" title="Sair">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <div>
+                    <h1 class="page-title">Apontamento de Horas</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">Registre suas atividades diárias.</p>
+                </div>
+            </header>
+
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: var(--spacing-xl);">
+                <!-- Form Section -->
+                <div>
+                    <div class="card">
+                        <h3 class="card-title">Novo Registro</h3>
+                        <form id="hours-form">
+                            <div class="form-group">
+                                <label class="form-label">Data</label>
+                                <input type="date" id="date" class="form-input" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Projeto</label>
+                                <select id="project-select" class="form-select" required>
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="engineer-group">
+                                <label class="form-label">Responsável</label>
+                                <select id="engineer-select" class="form-select" required disabled>
+                                    <option value="">Selecione o projeto primeiro...</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Atividade (Opcional)</label>
+                                <select id="activity-select" class="form-select" disabled>
+                                    <option value="">Selecione o projeto primeiro...</option>
+                                </select>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                                <div class="form-group">
+                                    <label class="form-label">Horas Trabalhadas</label>
+                                    <input type="number" id="hours" class="form-input" step="0.1" min="0.1"
+                                        placeholder="0.0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Tipo de Hora</label>
+                                    <select id="hour-type" class="form-select" required>
+                                        <option value="normal">Normal</option>
+                                        <option value="extra">Extra</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Descrição / Observação</label>
+                                <textarea id="observation" class="form-textarea" rows="3"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                <i class="fa-regular fa-floppy-disk"></i> Registrar
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Summary Card (Optional) -->
+                    <div class="card"
+                        style="margin-top: var(--spacing-lg); background-color: #f0fdf4; border-color: #bbf7d0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 500; color: #166534;">Hoje</span>
+                            <strong style="font-size: 1.25rem; color: #166534;" id="today-total">0.0h</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Section -->
+                <div class="card">
+                    <h3 class="card-title">Histórico Recente</h3>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Projeto</th>
+                                    <th>Atividade</th>
+                                    <th>Horas</th>
+                                    <th>Obs</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="hours-table-body">
+                                <tr>
+                                    <td colspan="6" style="text-align: center;">Carregando...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - Drivetech</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../js/supabaseClient.js" type="module"></script>
+    <script src="../js/auth.js" type="module"></script>
+    <style>
+        .print-header {
+            display: none;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        @page {
+            size: auto;
+            margin: 2cm !important;
+        }
+
+        @media print {
+
+            html,
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                width: 100%;
+            }
+
+            .sidebar,
+            .page-header button,
+            .filter-card,
+            .btn {
+                display: none !important;
+            }
+
+            .dashboard-layout {
+                display: block !important;
+                width: 100% !important;
+            }
+
+            .main-content {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                max-width: none !important;
+                overflow: visible !important;
+            }
+
+            .table-container {
+                overflow: visible !important;
+                border: none !important;
+                padding: 0 !important;
+            }
+
+            .card {
+                border: none !important;
+                box-shadow: none !important;
+                background: none !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+
+            .print-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+
+            .data-table {
+                font-size: 10pt;
+                width: 100% !important;
+                border-collapse: collapse;
+                table-layout: auto;
+            }
+
+            .data-table th,
+            .data-table td {
+                border: 1px solid #ddd !important;
+                padding: 8px !important;
+                overflow-wrap: break-word;
+            }
+
+            .data-table th {
+                background-color: #f2f2f2 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .data-table tbody tr:nth-child(even) {
+                background-color: #f9f9f9 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            body {
+                background: white !important;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-layer-group fa-lg" style="color: var(--primary-color);"></i>
+                <div style="display: flex; flex-direction: column;">
+                    <span class="logo-text" style="line-height: 1;">Drivetech</span>
+                    <span
+                        style="font-size: 0.6rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px;">Soluções
+                        Tecnológicas</span>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard
+                </a>
+                <a href="projetos.html" class="nav-item">
+                    <i class="fa-solid fa-briefcase"></i> Projetos
+                </a>
+                <a href="equipes.html" class="nav-item">
+                    <i class="fa-solid fa-users"></i> Equipes
+                </a>
+                <a href="alocacoes.html" class="nav-item">
+                    <i class="fa-solid fa-people-arrows"></i> Alocação
+                </a>
+                <a href="atividades.html" class="nav-item">
+                    <i class="fa-solid fa-list-check"></i> Atividades
+                </a>
+                <a href="horas.html" class="nav-item">
+                    <i class="fa-solid fa-clock"></i> Horas
+                </a>
+                <a href="clientes.html" class="nav-item">
+                    <i class="fa-solid fa-building"></i> Clientes
+                </a>
+                <a href="relatorios.html" class="nav-item active">
+                    <i class="fa-solid fa-file-export"></i> Relatórios
+                </a>
+
+            </nav>
+            <div class="user-profile">
+                <div style="flex: 1;">
+                    <div id="user-name" style="font-weight: 600; font-size: 0.9rem;">...</div>
+                    <div id="user-role" style="font-size: 0.75rem; color: var(--text-secondary);">...</div>
+                </div>
+                <button id="logout-btn" class="btn btn-sm btn-secondary" title="Sair"><i
+                        class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Print Header -->
+            <div class="print-header">
+                <div>
+                    <h2 style="color: var(--primary-color); margin: 0;">Drivetech Soluções Tecnológicas</h2>
+                    <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #666;">Relatório de Apontamento de Horas da
+                        Engenharia</p>
+                </div>
+                <div style="text-align: right;">
+                    <div id="print-period" style="font-weight: 600; font-size: 0.85rem;"></div>
+                    <div style="font-size: 0.75rem; color: #999; margin-top: 4px;">Gerado em: <span
+                            id="print-date"></span></div>
+                </div>
+            </div>
+
+            <header class="page-header">
+                <div>
+                    <h1 class="page-title">Relatórios e Exportação</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">Filtre e exporte os dados de horas
+                        trabalhadas.</p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-md);">
+                    <button class="btn btn-secondary" id="btn-print">
+                        <i class="fa-solid fa-print"></i> Imprimir PDF
+                    </button>
+                    <button class="btn btn-primary" id="btn-export-csv">
+                        <i class="fa-solid fa-file-csv"></i> Exportar CSV
+                    </button>
+                </div>
+            </header>
+
+            <!-- Filters -->
+            <div class="card filter-card" style="margin-bottom: var(--spacing-lg);">
+                <form id="filter-form"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-md); align-items: flex-end;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Data Início</label>
+                        <input type="date" id="filter-start" class="form-input">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Data Fim</label>
+                        <input type="date" id="filter-end" class="form-input">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Projeto</label>
+                        <select id="filter-project" class="form-select">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Engenheiro</label>
+                        <select id="filter-engineer" class="form-select">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-filter"></i> Filtrar
+                    </button>
+                </form>
+            </div>
+
+            <!-- Table Preview -->
+            <div class="card">
+                <h3 class="card-title">Prévia dos Dados</h3>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Projeto</th>
+                                <th>Engenheiro</th>
+                                <th>Atividade</th>
+                                <th>Horas</th>
+                                <th>Observação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-table-body">
+                            <tr>
+                                <td colspan="6" style="text-align: center;">Use os filtros para carregar os dados.</td>
+                            </tr>
+                        </tbody>
+                        <tfoot id="report-table-foot" style="font-weight: bold; background-color: #f9fafb;">
+                            <!-- Total will be here -->
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../js/relatorios.js" type="module"></script>
+</body>
+
+</html>

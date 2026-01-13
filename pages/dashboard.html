@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Drivetech</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/supabaseClient.js" type="module"></script>
+    <script src="../js/auth.js" type="module"></script>
+    <script src="../js/dashboard.js" type="module"></script>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-layer-group fa-lg" style="color: var(--primary-color);"></i>
+                <div style="display: flex; flex-direction: column;">
+                    <span class="logo-text" style="line-height: 1;">Drivetech</span>
+                    <span
+                        style="font-size: 0.6rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px;">Soluções
+                        Tecnológicas</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-item active">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard
+                </a>
+                <a href="projetos.html" class="nav-item">
+                    <i class="fa-solid fa-briefcase"></i> Projetos
+                </a>
+                <a href="equipes.html" class="nav-item">
+                    <i class="fa-solid fa-users"></i> Equipes
+                </a>
+                <a href="alocacoes.html" class="nav-item">
+                    <i class="fa-solid fa-people-arrows"></i> Alocação
+                </a>
+                <a href="atividades.html" class="nav-item">
+                    <i class="fa-solid fa-list-check"></i> Atividades
+                </a>
+                <a href="horas.html" class="nav-item">
+                    <i class="fa-solid fa-clock"></i> Horas
+                </a>
+                <a href="clientes.html" class="nav-item">
+                    <i class="fa-solid fa-building"></i> Clientes
+                </a>
+                <a href="relatorios.html" class="nav-item">
+                    <i class="fa-solid fa-file-export"></i> Relatórios
+                </a>
+
+            </nav>
+
+            <div class="user-profile">
+                <div style="flex: 1;">
+                    <div id="user-name" style="font-weight: 600; font-size: 0.9rem;">Carregando...</div>
+                    <div id="user-role" style="font-size: 0.75rem; color: var(--text-secondary);">...</div>
+                </div>
+                <button id="logout-btn" class="btn btn-sm btn-secondary" title="Sair">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <div>
+                    <h1 class="page-title">Dashboard</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">Acompanhamento geral e métricas de
+                        produtividade (Engenharia de Projetos).</p>
+                </div>
+                <div style="display: flex; gap: var(--spacing-md); align-items: center;">
+                    <select id="project-filter" class="form-select" style="width: 250px;">
+                        <option value="">Todos os Projetos</option>
+                    </select>
+                </div>
+            </header>
+
+            <!-- KPIs -->
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                <div class="card">
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Projetos
+                        Ativos</div>
+                    <div id="kpi-projects" style="font-size: 2rem; font-weight: 700; color: var(--text-primary);">--
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--success-color); margin-top: 0.5rem;">
+                        <i class="fa-solid fa-arrow-trend-up"></i> Em andamento
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Total de
+                        Horas (Mês)</div>
+                    <div id="kpi-hours" style="font-size: 2rem; font-weight: 700; color: var(--text-primary);">--</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        Acumulado
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Equipe
+                        Alocada</div>
+                    <div id="kpi-team" style="font-size: 2rem; font-weight: 700; color: var(--text-primary);">--</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        Engenheiros ativos
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Atividades
+                        Pendentes</div>
+                    <div id="kpi-tasks" style="font-size: 2rem; font-weight: 700; color: var(--warning-color);">--</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        Backlog + To Do
+                    </div>
+                </div>
+                <div class="card" id="kpi-cost-card" style="display: none;">
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Investimento
+                        Total</div>
+                    <div id="kpi-cost" style="font-size: 2rem; font-weight: 700; color: var(--primary-color);">R$ --
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        Baseado em horas normais/extras
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                <div class="card">
+                    <h3 class="card-title">Consumo de Horas (Gasto vs Previsto)</h3>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="chart-hours"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Status das Atividades</h3>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="chart-tasks"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity / Projects List -->
+            <div class="card">
+                <h3 class="card-title">Visão Geral dos Projetos</h3>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Projeto</th>
+                                <th>Cliente</th>
+                                <th>Status</th>
+                                <th>Prazo</th>
+                                <th>Progresso (Simulado)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projects-table-body">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-secondary);">Carregando
+                                    dados...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+
+</html>

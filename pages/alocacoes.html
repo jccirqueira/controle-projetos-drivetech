@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alocação de Equipe - Drivetech</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../js/supabaseClient.js" type="module"></script>
+    <script src="../js/auth.js" type="module"></script>
+    <script src="../js/alocacoes.js" type="module"></script>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-layer-group fa-lg" style="color: var(--primary-color);"></i>
+                <div style="display: flex; flex-direction: column;">
+                    <span class="logo-text" style="line-height: 1;">Drivetech</span>
+                    <span
+                        style="font-size: 0.6rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px;">Soluções
+                        Tecnológicas</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard
+                </a>
+                <a href="projetos.html" class="nav-item">
+                    <i class="fa-solid fa-briefcase"></i> Projetos
+                </a>
+                <a href="equipes.html" class="nav-item">
+                    <i class="fa-solid fa-users"></i> Equipes
+                </a>
+                <a href="alocacoes.html" class="nav-item active">
+                    <i class="fa-solid fa-people-arrows"></i> Alocação
+                </a>
+                <a href="atividades.html" class="nav-item">
+                    <i class="fa-solid fa-list-check"></i> Atividades
+                </a>
+                <a href="horas.html" class="nav-item">
+                    <i class="fa-solid fa-clock"></i> Horas
+                </a>
+                <a href="clientes.html" class="nav-item">
+                    <i class="fa-solid fa-building"></i> Clientes
+                </a>
+                <a href="relatorios.html" class="nav-item">
+                    <i class="fa-solid fa-file-export"></i> Relatórios
+                </a>
+
+            </nav>
+
+            <div class="user-profile">
+                <div style="flex: 1;">
+                    <div id="user-name" style="font-weight: 600; font-size: 0.9rem;">...</div>
+                    <div id="user-role" style="font-size: 0.75rem; color: var(--text-secondary);">...</div>
+                </div>
+                <button id="logout-btn" class="btn btn-sm btn-secondary" title="Sair">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <div>
+                    <h1 class="page-title">Alocação da Equipe</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.5rem;">Visão consolidada da carga de trabalho
+                        dos engenheiros.</p>
+                </div>
+            </header>
+
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                <div class="card">
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Engenheiros
+                        com Sobrecarga</div>
+                    <div id="kpi-overloaded" style="font-size: 2rem; font-weight: 700; color: var(--error-color);">--
+                    </div>
+                </div>
+                <div class="card">
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Capacidade
+                        Total Utilizada</div>
+                    <div id="kpi-utilization" style="font-size: 2rem; font-weight: 700; color: var(--primary-color);">--
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+                    <h3 class="card-title" style="margin: 0;">Carga de Trabalho por Engenheiro</h3>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="location.reload()">
+                            <i class="fa-solid fa-rotate"></i> Atualizar
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Engenheiro</th>
+                                <th>Nível</th>
+                                <th>Alocação Atual</th>
+                                <th>Projetos Ativos</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allocation-table-body">
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Carregando dados...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

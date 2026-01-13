@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividades - Drivetech</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../js/supabaseClient.js" type="module"></script>
+    <script src="../js/auth.js" type="module"></script>
+    <script src="../js/kanban.js" type="module"></script>
+    <style>
+        /* Kanban specific enhancements */
+        .kanban-column.drag-over {
+            background-color: #d1fae5;
+            border: 2px dashed #10b981;
+        }
+
+        .kanban-card.dragging {
+            opacity: 0.5;
+        }
+
+        .priority-high {
+            border-left: 4px solid var(--error-color);
+        }
+
+        .priority-normal {
+            border-left: 4px solid var(--primary-color);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-layer-group fa-lg" style="color: var(--primary-color);"></i>
+                <div style="display: flex; flex-direction: column;">
+                    <span class="logo-text" style="line-height: 1;">Drivetech</span>
+                    <span
+                        style="font-size: 0.6rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px;">Soluções
+                        Tecnológicas</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard
+                </a>
+                <a href="projetos.html" class="nav-item">
+                    <i class="fa-solid fa-briefcase"></i> Projetos
+                </a>
+                <a href="equipes.html" class="nav-item">
+                    <i class="fa-solid fa-users"></i> Equipes
+                </a>
+                <a href="alocacoes.html" class="nav-item">
+                    <i class="fa-solid fa-people-arrows"></i> Alocação
+                </a>
+                <a href="atividades.html" class="nav-item active">
+                    <i class="fa-solid fa-list-check"></i> Atividades
+                </a>
+                <a href="horas.html" class="nav-item">
+                    <i class="fa-solid fa-clock"></i> Horas
+                </a>
+                <a href="clientes.html" class="nav-item">
+                    <i class="fa-solid fa-building"></i> Clientes
+                </a>
+                <a href="relatorios.html" class="nav-item">
+                    <i class="fa-solid fa-file-export"></i> Relatórios
+                </a>
+
+            </nav>
+
+            <div class="user-profile">
+                <div style="flex: 1;">
+                    <div id="user-name" style="font-weight: 600; font-size: 0.9rem;">...</div>
+                    <div id="user-role" style="font-size: 0.75rem; color: var(--text-secondary);">...</div>
+                </div>
+                <button id="logout-btn" class="btn btn-sm btn-secondary" title="Sair"><i
+                        class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </aside>
+
+        <main class="main-content" style="display: flex; flex-direction: column; overflow: hidden;">
+            <header class="page-header">
+                <div style="display: flex; gap: var(--spacing-lg); align-items: center;">
+                    <h1 class="page-title">Quadro de Atividades</h1>
+                    <select id="project-filter" class="form-select" style="width: 250px;">
+                        <option value="">Todos os Projetos</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" id="btn-add-task">
+                    <i class="fa-solid fa-plus"></i> Nova Tarefa
+                </button>
+            </header>
+
+            <div class="kanban-board">
+                <!-- Columns -->
+                <div class="kanban-column" data-status="backlog" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="kanban-header">
+                        <span>Backlog</span>
+                        <span class="count-badge" id="count-backlog">0</span>
+                    </div>
+                    <div class="kanban-cards" id="col-backlog"></div>
+                </div>
+
+                <div class="kanban-column" data-status="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="kanban-header">
+                        <span>A Fazer</span>
+                        <span class="count-badge" id="count-todo">0</span>
+                    </div>
+                    <div class="kanban-cards" id="col-todo"></div>
+                </div>
+
+                <div class="kanban-column" data-status="doing" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="kanban-header">
+                        <span>Em Andamento</span>
+                        <span class="count-badge" id="count-doing">0</span>
+                    </div>
+                    <div class="kanban-cards" id="col-doing"></div>
+                </div>
+
+                <div class="kanban-column" data-status="review" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="kanban-header">
+                        <span>Revisão</span>
+                        <span class="count-badge" id="count-review">0</span>
+                    </div>
+                    <div class="kanban-cards" id="col-review"></div>
+                </div>
+
+                <div class="kanban-column" data-status="done" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="kanban-header">
+                        <span>Concluído</span>
+                        <span class="count-badge" id="count-done">0</span>
+                    </div>
+                    <div class="kanban-cards" id="col-done"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: Task CRUD -->
+    <div class="modal-overlay" id="modal-task-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="card-title" id="modal-task-title">Nova Atividade</h3>
+                <button class="modal-close" id="modal-task-close">&times;</button>
+            </div>
+            <form id="task-form">
+                <input type="hidden" id="task-id">
+
+                <div class="form-group">
+                    <label class="form-label">Título</label>
+                    <input type="text" id="task-title" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Projeto</label>
+                    <select id="task-project" class="form-select" required>
+                        <option value="">Selecione...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Responsável</label>
+                    <select id="task-engineer" class="form-select">
+                        <option value="">Sem responsável</option>
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md);">
+                    <div class="form-group">
+                        <label class="form-label">Prazo</label>
+                        <input type="date" id="task-deadline" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Horas Previstas</label>
+                        <input type="number" id="task-hours" class="form-input" step="0.5" min="0" placeholder="0.0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <textarea id="task-desc" class="form-textarea" rows="3"></textarea>
+                </div>
+
+                <!-- Hidden status, defaults to backlog on create -->
+                <input type="hidden" id="task-status" value="backlog">
+
+                <div
+                    style="display: flex; justify-content: flex-end; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="document.getElementById('modal-task-overlay').classList.remove('open')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drivetech - Gestão de Projetos</title>
+    <script src="./js/supabaseClient.js" type="module"></script>
+    <script src="./js/auth.js" type="module"></script>
+    <script type="module">
+        import { auth } from './js/auth.js';
+
+        window.addEventListener('load', async () => {
+            const session = await auth.checkAuth();
+            if (session) {
+                window.location.href = '/pages/dashboard.html';
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <p>Redirecionando...</p>
+</body>
+
+</html>
