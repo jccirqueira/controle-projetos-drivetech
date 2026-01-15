@@ -307,3 +307,136 @@
     color: var(--text-secondary);
     cursor: pointer;
 }
+
+/* Mobile Responsive Styles for Components */
+@media (max-width: 768px) {
+
+    /* Buttons - Touch-friendly sizing */
+    .btn {
+        min-height: 44px;
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .btn-sm {
+        min-height: 36px;
+        padding: 0.375rem 0.75rem;
+    }
+
+    /* Forms */
+    .form-input,
+    .form-select,
+    .form-textarea {
+        font-size: 16px;
+        /* Prevents zoom on iOS */
+        padding: 0.75rem;
+        min-height: 44px;
+    }
+
+    .form-label {
+        font-size: 0.875rem;
+    }
+
+    /* Tables - Horizontal scroll */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 calc(-1 * var(--spacing-md));
+        padding: 0 var(--spacing-md);
+    }
+
+    .data-table {
+        min-width: 600px;
+        /* Force horizontal scroll */
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .data-table th {
+        font-size: 0.7rem;
+    }
+
+    /* Cards */
+    .card {
+        padding: var(--spacing-md);
+    }
+
+    .card-title {
+        font-size: 1rem;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    /* Modals */
+    .modal {
+        max-width: calc(100% - 2rem);
+        margin: 1rem;
+        padding: var(--spacing-lg);
+    }
+
+    .modal-header {
+        margin-bottom: var(--spacing-md);
+    }
+
+    /* Kanban Board */
+    .kanban-board {
+        height: calc(100vh - 180px);
+        gap: var(--spacing-sm);
+    }
+
+    .kanban-column {
+        flex: 0 0 280px;
+        /* Slightly narrower columns */
+        padding: var(--spacing-sm);
+    }
+
+    .kanban-header {
+        font-size: 0.875rem;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .kanban-card {
+        padding: var(--spacing-sm);
+    }
+
+    .kanban-card h4 {
+        font-size: 0.875rem;
+    }
+
+    .kanban-card p {
+        font-size: 0.8rem;
+    }
+
+    /* Status badges */
+    .status-badge {
+        font-size: 0.7rem;
+        padding: 0.125rem 0.5rem;
+    }
+
+    /* Alerts */
+    .alert {
+        padding: var(--spacing-sm);
+        font-size: 0.875rem;
+        gap: var(--spacing-sm);
+    }
+}
+
+/* Tablet Responsive Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+    .data-table th,
+    .data-table td {
+        padding: 0.625rem 1rem;
+    }
+
+    .kanban-column {
+        flex: 0 0 280px;
+    }
+
+    .modal {
+        max-width: 600px;
+    }
+}

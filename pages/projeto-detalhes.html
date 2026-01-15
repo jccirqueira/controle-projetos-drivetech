@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../js/supabaseClient.js" type="module"></script>
     <script src="../js/auth.js" type="module"></script>
+    <script src="../js/mobile.js" type="module"></script>
     <script src="../js/projeto-detalhes.js" type="module"></script>
 </head>
 
@@ -74,7 +75,7 @@
 
             <!-- KPIs -->
             <div
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
                 <div class="card">
                     <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Progresso de
                         Horas</div>
@@ -110,7 +111,7 @@
 
             <!-- Charts Row -->
             <div
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
                 <div class="card">
                     <h3 class="card-title">Consumo de Horas por Engenheiro</h3>
                     <div style="height: 300px;">
@@ -126,7 +127,17 @@
             </div>
 
             <!-- Team and Activities Tables -->
-            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: var(--spacing-lg);">
+            <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
+                <style>
+                    @media (min-width: 1024px) {
+                        .projeto-detalhes-grid {
+                            grid-template-columns: 1fr 1.5fr !important;
+                        }
+                    }
+                </style>
+                <script>
+                    document.querySelector('[style*="grid-template-columns: 1fr"]').classList.add('projeto-detalhes-grid');
+                </script>
                 <div class="card">
                     <h3 class="card-title">Equipe do Projeto</h3>
                     <table class="data-table">

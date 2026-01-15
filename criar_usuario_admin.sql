@@ -9,7 +9,7 @@
 -- Cria o usuário na tabela do sistema ligado ao login do Supabase
 INSERT INTO public.usuarios (id, nome, email, perfil, ativo)
 VALUES (
-    'SEU_ID_AQUI',           -- <--- COLE O ID AQUI, MANTENDO AS ASPAS (Ex: 'a0eebc99...')
+    '37f3c216-e081-4d6d-a7f0-d00adda414aa',           -- <--- COLE O ID AQUI, MANTENDO AS ASPAS (Ex: 'a0eebc99...')
     'Administrador',         -- Nome que vai aparecer no painel
     'admin@drivetech.com',   -- O mesmo email que você usou no Authentication
     'admin',                 -- Perfil administrativo
@@ -19,7 +19,7 @@ VALUES (
 -- Cria o perfil de engenheiro para este administrador (para ele poder aparecer nas listas)
 INSERT INTO public.engenheiros (usuario_id, especialidade, nivel, disponibilidade)
 VALUES (
-    'SEU_ID_AQUI',           -- <--- COLE O MESMO ID AQUI TAMBÉM
+    '37f3c216-e081-4d6d-a7f0-d00adda414aa',           -- <--- COLE O MESMO ID AQUI TAMBÉM
     'Gestão',
     'especialista',
     100

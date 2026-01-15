@@ -14,6 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../js/supabaseClient.js" type="module"></script>
     <script src="../js/auth.js" type="module"></script>
+    <script src="../js/mobile.js" type="module"></script>
     <script src="../js/dashboard.js" type="module"></script>
 </head>
 
@@ -87,7 +88,7 @@
 
             <!-- KPIs -->
             <div
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
                 <div class="card">
                     <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">Projetos
                         Ativos</div>
@@ -137,7 +138,7 @@
 
             <!-- Charts Section -->
             <div
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr)); gap: var(--spacing-lg); margin-bottom: var(--spacing-xl);">
                 <div class="card">
                     <h3 class="card-title">Consumo de Horas (Gasto vs Previsto)</h3>
                     <div style="height: 300px; position: relative;">

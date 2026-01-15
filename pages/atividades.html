@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="../js/supabaseClient.js" type="module"></script>
     <script src="../js/auth.js" type="module"></script>
+    <script src="../js/mobile.js" type="module"></script>
     <script src="../js/kanban.js" type="module"></script>
     <style>
         /* Kanban specific enhancements */
@@ -191,10 +192,14 @@
                 <input type="hidden" id="task-status" value="backlog">
 
                 <div
-                    style="display: flex; justify-content: flex-end; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
-                    <button type="button" class="btn btn-secondary"
-                        onclick="document.getElementById('modal-task-overlay').classList.remove('open')">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--spacing-lg);">
+                    <button type="button" class="btn btn-danger" id="btn-delete-task" style="display: none;">
+                        <i class="fa-solid fa-trash"></i> Excluir
+                    </button>
+                    <div style="display: flex; gap: var(--spacing-md);">
+                        <button type="button" class="btn btn-secondary" id="btn-cancel-task">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
                 </div>
             </form>
         </div>

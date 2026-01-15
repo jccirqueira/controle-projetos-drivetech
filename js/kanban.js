@@ -38,7 +38,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Events
     document.getElementById('project-filter').addEventListener('change', () => loadBoard());
     document.getElementById('btn-add-task').addEventListener('click', () => openTaskModal());
-    document.getElementById('modal-task-close').addEventListener('click', () => document.getElementById('modal-task-overlay').classList.remove('open'));
+    document.getElementById('modal-task-close').addEventListener('click', () => modal.classList.remove('open'));
+    document.getElementById('btn-cancel-task').addEventListener('click', () => modal.classList.remove('open'));
+    document.getElementById('btn-delete-task').addEventListener('click', () => deleteTask());
     document.getElementById('logout-btn').addEventListener('click', () => auth.logout());
 
     setupTaskForm();
@@ -270,9 +272,28 @@ function setupTaskForm() {
     });
 }
 
+async function deleteTask() {
+    const id = document.getElementById('task-id').value;
+    if (!id) return;
+
+    if (confirm('Tem certeza que deseja excluir esta atividade?')) {
+        const { error } = await supabase.from('atividades').delete().eq('id', id);
+
+        if (error) {
+            alert('Erro ao excluir: ' + error.message);
+        } else {
+            modal.classList.remove('open');
+            loadBoard();
+        }
+    }
+}
+
 async function openTaskModal(task = null) {
     modal.classList.add('open');
+    const deleteBtn = document.getElementById('btn-delete-task');
+
     if (task) {
+        deleteBtn.style.display = 'block';
         document.getElementById('modal-task-title').textContent = 'Editar Atividade';
         document.getElementById('task-id').value = task.id;
         document.getElementById('task-title').value = task.title;
@@ -286,6 +307,7 @@ async function openTaskModal(task = null) {
         document.getElementById('task-desc').value = task.desc || '';
         document.getElementById('task-status').value = task.status;
     } else {
+        deleteBtn.style.display = 'none';
         document.getElementById('modal-task-title').textContent = 'Nova Atividade';
         form.reset();
         document.getElementById('task-id').value = '';

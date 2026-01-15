@@ -111,3 +111,121 @@
 .login-logo {
     margin-bottom: var(--spacing-xl);
 }
+
+/* Mobile Hamburger Menu */
+.mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 100;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.mobile-menu-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+.mobile-menu-btn i {
+    font-size: 1.25rem;
+}
+
+/* Sidebar Overlay for Mobile */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 49;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+
+    /* Show mobile menu button */
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    /* Dashboard Layout */
+    .dashboard-layout {
+        grid-template-columns: 1fr;
+    }
+
+    /* Sidebar becomes overlay */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -250px;
+        width: 250px;
+        height: 100vh;
+        z-index: 50;
+        transition: left 0.3s ease-in-out;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .sidebar-overlay {
+        display: block;
+    }
+
+    /* Main Content */
+    .main-content {
+        padding: var(--spacing-md);
+        padding-top: 4rem;
+        /* Space for mobile menu button */
+    }
+
+    /* Page Header */
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    /* Login Card */
+    .login-card {
+        padding: 1.5rem;
+        margin: var(--spacing-md);
+    }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .dashboard-layout {
+        grid-template-columns: 200px 1fr;
+    }
+
+    .sidebar {
+        padding: var(--spacing-sm);
+    }
+
+    .main-content {
+        padding: var(--spacing-lg);
+    }
+}
