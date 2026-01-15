@@ -62,9 +62,6 @@ export const mobileNav = {
                 this.closeMenu();
             }
         });
-
-        // Prevent body scroll when menu is open
-        this.preventBodyScroll();
     },
 
     toggleMenu() {
@@ -92,18 +89,6 @@ export const mobileNav = {
 
         // Update button icon
         this.menuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
-    },
-
-    preventBodyScroll() {
-        // Prevent scroll on touch devices when menu is open
-        // Only prevent default if menu is actually open and touch is outside sidebar
-        document.addEventListener('touchmove', (e) => {
-            if (this.sidebar && this.sidebar.classList.contains('active') &&
-                !this.sidebar.contains(e.target) &&
-                !this.menuBtn.contains(e.target)) {
-                e.preventDefault();
-            }
-        }, { passive: false });
     }
 };
 
