@@ -96,18 +96,11 @@ export const mobileNav = {
 
     preventBodyScroll() {
         // Prevent scroll on touch devices when menu is open
-        let touchStartY = 0;
-
-        document.addEventListener('touchstart', (e) => {
-            if (this.sidebar.classList.contains('active') &&
-                !this.sidebar.contains(e.target)) {
-                touchStartY = e.touches[0].clientY;
-            }
-        }, { passive: false });
-
+        // Only prevent default if menu is actually open and touch is outside sidebar
         document.addEventListener('touchmove', (e) => {
-            if (this.sidebar.classList.contains('active') &&
-                !this.sidebar.contains(e.target)) {
+            if (this.sidebar && this.sidebar.classList.contains('active') &&
+                !this.sidebar.contains(e.target) &&
+                !this.menuBtn.contains(e.target)) {
                 e.preventDefault();
             }
         }, { passive: false });
